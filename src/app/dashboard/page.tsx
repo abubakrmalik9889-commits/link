@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { 
-  Plus, 
-  FileText, 
-  Download, 
-  Edit2, 
-  Trash2, 
-  Copy, 
+import {
+  Plus,
+  FileText,
+  Download,
+  Edit2,
+  Trash2,
+  Copy,
   Sparkles,
   TrendingUp,
   Eye,
@@ -24,60 +24,24 @@ import { GradientText } from '@/components/ui/GradientText'
 import { Badge } from '@/components/ui/Badge'
 import { useResumeStore } from '@/store/resumeStore'
 
-// Mock data for demonstration
-const mockResumes = [
-  {
-    id: '1',
-    name: 'Software Engineer Resume',
-    templateId: 'modern-teal',
-    lastModified: '2 hours ago',
-    views: 45,
-    downloads: 12,
-    atsScore: 92,
-  },
-  {
-    id: '2',
-    name: 'Product Manager Resume',
-    templateId: 'executive-navy',
-    lastModified: '1 day ago',
-    views: 28,
-    downloads: 8,
-    atsScore: 88,
-  },
-  {
-    id: '3',
-    name: 'UX Designer Resume',
-    templateId: 'creative-sidebar',
-    lastModified: '3 days ago',
-    views: 15,
-    downloads: 3,
-    atsScore: 85,
-  },
-]
-
-const recentActivity = [
-  { action: 'Resume viewed', item: 'Software Engineer Resume', time: '2 hours ago' },
-  { action: 'Downloaded PDF', item: 'Product Manager Resume', time: '5 hours ago' },
-  { action: 'ATS score improved', item: 'UX Designer Resume', time: '1 day ago' },
-  { action: 'New resume created', item: 'Data Analyst Resume', time: '2 days ago' },
-]
-
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState('')
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { resumes: _resumes } = useResumeStore()
+  const { resumes } = useResumeStore()
 
-  const displayResumes = mockResumes.filter(r => 
+  const displayResumes = resumes.filter((r) =>
     r.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
+  const totalResumes = displayResumes.length
+  const avgAtsScore = totalResumes > 0
+    ? Math.round(displayResumes.reduce((sum, resume) => sum + (resume.atsScore || 0), 0) / totalResumes)
+    : 0
 
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a]">
       <Navbar />
-      
+
       <div className="pt-24 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
           <SlideIn>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
               <div>
@@ -97,50 +61,49 @@ export default function DashboardPage() {
             </div>
           </SlideIn>
 
-          {/* Stats Overview */}
           <SlideIn delay={0.1}>
             <div className="grid md:grid-cols-4 gap-4 mb-8">
               <GlassCard className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Total Resumes</p>
-                    <p className="text-2xl font-bold">{displayResumes.length}</p>
+                    <p className="text-2xl font-bold">{totalResumes}</p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                     <FileText className="w-6 h-6 text-emerald-500" />
                   </div>
                 </div>
               </GlassCard>
-              
+
               <GlassCard className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Total Views</p>
-                    <p className="text-2xl font-bold">88</p>
+                    <p className="text-2xl font-bold">0</p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
                     <Eye className="w-6 h-6 text-blue-500" />
                   </div>
                 </div>
               </GlassCard>
-              
+
               <GlassCard className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Downloads</p>
-                    <p className="text-2xl font-bold">23</p>
+                    <p className="text-2xl font-bold">0</p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
                     <Download className="w-6 h-6 text-purple-500" />
                   </div>
                 </div>
               </GlassCard>
-              
+
               <GlassCard className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Avg ATS Score</p>
-                    <p className="text-2xl font-bold">88.3</p>
+                    <p className="text-2xl font-bold">{avgAtsScore}</p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
                     <TrendingUp className="w-6 h-6 text-amber-500" />
@@ -151,11 +114,9 @@ export default function DashboardPage() {
           </SlideIn>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* Main Content - Resumes List */}
             <div className="lg:col-span-2">
               <SlideIn delay={0.2}>
                 <GlassCard className="p-6">
-                  {/* Search & Filter */}
                   <div className="flex flex-col sm:flex-row gap-4 mb-6">
                     <div className="relative flex-1">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -177,7 +138,6 @@ export default function DashboardPage() {
                     </motion.button>
                   </div>
 
-                  {/* Resumes Grid */}
                   <div className="space-y-4">
                     {displayResumes.map((resume, index) => (
                       <motion.div
@@ -189,29 +149,26 @@ export default function DashboardPage() {
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex gap-4">
-                            {/* Thumbnail */}
                             <div className="w-20 h-28 bg-gray-100 dark:bg-gray-800 rounded-lg flex-shrink-0 overflow-hidden">
                               <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800" />
                             </div>
-                            
-                            {/* Info */}
+
                             <div>
                               <h3 className="font-semibold text-lg mb-1">{resume.name}</h3>
                               <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                Modified {resume.lastModified}
+                                Modified {new Date(resume.updatedAt).toLocaleDateString()}
                               </p>
                               <div className="flex items-center gap-3">
-                                <Badge variant={resume.atsScore >= 90 ? 'success' : 'warning'}>
-                                  ATS: {resume.atsScore}%
+                                <Badge variant={(resume.atsScore || 0) >= 90 ? 'success' : 'warning'}>
+                                  ATS: {resume.atsScore || 0}%
                                 </Badge>
                                 <span className="text-xs text-gray-500">
-                                  {resume.views} views • {resume.downloads} downloads
+                                  Analytics available in upcoming release
                                 </span>
                               </div>
                             </div>
                           </div>
 
-                          {/* Actions */}
                           <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                             <motion.button
                               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -258,9 +215,7 @@ export default function DashboardPage() {
               </SlideIn>
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* AI Suggestions */}
               <SlideIn delay={0.3}>
                 <GlassCard className="p-6">
                   <div className="flex items-center gap-2 mb-4">
@@ -288,26 +243,17 @@ export default function DashboardPage() {
                 </GlassCard>
               </SlideIn>
 
-              {/* Recent Activity */}
               <SlideIn delay={0.4}>
                 <GlassCard className="p-6">
                   <h3 className="font-semibold mb-4">Recent Activity</h3>
                   <div className="space-y-4">
-                    {recentActivity.map((activity, index) => (
-                      <div key={index} className="flex items-start gap-3">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 mt-2" />
-                        <div>
-                          <p className="text-sm font-medium">{activity.action}</p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400">{activity.item}</p>
-                          <p className="text-xs text-gray-400">{activity.time}</p>
-                        </div>
-                      </div>
-                    ))}
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Activity tracking will appear here as soon as analytics is connected.
+                    </p>
                   </div>
                 </GlassCard>
               </SlideIn>
 
-              {/* Upgrade CTA */}
               <SlideIn delay={0.5}>
                 <GlassCard className="p-6 bg-gradient-to-br from-emerald-500/10 to-blue-500/10">
                   <h3 className="font-semibold mb-2">Upgrade to Pro</h3>

@@ -1,7 +1,9 @@
 // API client for communicating with Fastify backend
 import { Resume } from '@/types'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+const API_URL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    (process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : '')
 
 interface ApiResponse<T> {
     data?: T
@@ -37,6 +39,9 @@ class ApiClient {
         endpoint: string,
         options: RequestInit = {}
     ): Promise<ApiResponse<T>> {
+        if (!API_URL) {
+            return { error: 'Missing NEXT_PUBLIC_API_URL in production environment' }
+        }
         const url = `${API_URL}${endpoint}`
 
         const headers: Record<string, string> = {

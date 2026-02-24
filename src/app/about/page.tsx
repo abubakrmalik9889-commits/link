@@ -30,35 +30,35 @@ const values = [
 
 const team = [
   {
-    name: 'Alex Chen',
-    role: 'CEO & Co-Founder',
-    bio: 'Former Google PM with a passion for democratizing career tools.',
+    name: 'Product Team',
+    role: 'Core Builder',
+    bio: 'Focused on creating a fast and reliable resume editing experience.',
     color: 'from-emerald-400 to-emerald-600',
   },
   {
-    name: 'Sarah Miller',
-    role: 'CTO & Co-Founder',
-    bio: 'Ex-Microsoft engineer building AI that understands careers.',
+    name: 'Engineering Team',
+    role: 'Platform',
+    bio: 'Builds secure APIs, integrations, and production-ready workflows.',
     color: 'from-blue-400 to-blue-600',
   },
   {
-    name: 'James Wilson',
-    role: 'Head of Design',
-    bio: 'Award-winning designer crafting beautiful resume experiences.',
+    name: 'Design Team',
+    role: 'Templates & UX',
+    bio: 'Designs templates that balance visual quality and ATS readability.',
     color: 'from-purple-400 to-purple-600',
   },
   {
-    name: 'Emily Zhang',
-    role: 'Head of AI',
-    bio: 'PhD in ML, building the future of intelligent career assistance.',
+    name: 'AI Team',
+    role: 'Assistant Features',
+    bio: 'Improves prompts and outputs for summaries and skill recommendations.',
     color: 'from-pink-400 to-pink-600',
   },
 ]
 
 const stats = [
-  { icon: Users, value: '500K+', label: 'Active Users' },
-  { icon: Award, value: '2M+', label: 'Resumes Created' },
-  { icon: Globe, value: '50+', label: 'Countries' },
+  { icon: Users, value: 'Growing', label: 'User Base' },
+  { icon: Award, value: '7+', label: 'Templates' },
+  { icon: Globe, value: 'Global', label: 'Accessibility' },
 ]
 
 export default function AboutPage() {
@@ -164,9 +164,8 @@ export default function AboutPage() {
                       AI with beautiful design to create a resume builder that actually works.
                     </p>
                     <p>
-                      Today, we&apos;ve helped over 500,000 professionals land their dream jobs, and we&apos;re 
-                      just getting started. Our AI continues to learn and improve, ensuring every resume 
-                      we help create is better than the last.
+                      We continue shipping practical improvements based on user feedback, with a clear
+                      focus on speed, ATS compatibility, and cleaner output quality.
                     </p>
                   </div>
                 </div>

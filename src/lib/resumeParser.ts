@@ -1,4 +1,4 @@
-ï»¿import { Resume, Experience, Education, Skill, Certification, PersonalInfo, Project } from '@/types'
+import { Resume, Experience, Education, Skill, Certification, PersonalInfo, Project } from '@/types'
 import { generateId } from './utils'
 
 // Extract text from PDF using pdfjs (dynamic import to avoid SSR issues)
@@ -62,7 +62,6 @@ async function extractTextFromPdf(arrayBuffer: ArrayBuffer): Promise<string> {
                 fullText += `${buildLines(cleanItems)}\n\n`
             }
         }
-        console.log('PDF extracted text length:', fullText.length)
         return fullText
     } catch (err) {
         console.error('PDF parsing failed:', err)
@@ -87,12 +86,10 @@ export async function extractTextFromFile(file: File): Promise<string> {
     const arrayBuffer = await file.arrayBuffer()
 
     if (ext === 'pdf') {
-        console.log('Detected PDF, extracting text...')
         return extractTextFromPdf(arrayBuffer)
     }
 
     if (ext === 'docx') {
-        console.log('Detected DOCX, extracting text...')
         return extractTextFromDocx(arrayBuffer)
     }
 
@@ -107,8 +104,6 @@ export async function extractTextFromFile(file: File): Promise<string> {
 
 // Basic heuristics to parse text into structured resume fields
 export function parseTextToResume(text: string): Partial<Resume> {
-    console.log('Parsing text, length:', text.length)
-
     // Normalize whitespace but preserve line structure
     const normalized = text.replace(/\s+/g, ' ').split(/[.\n]/).map(l => l.trim()).filter(Boolean)
     const allLines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean)
@@ -222,7 +217,7 @@ export function parseTextToResume(text: string): Partial<Resume> {
     const sectionAliasEntries = Array.from(aliasLookup.entries()).sort((a, b) => b[0].length - a[0].length)
     const getInlineFromRaw = (line: string, alias: string) => {
         const escapedAlias = alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+')
-        const rx = new RegExp(`^[^A-Za-z0-9]*${escapedAlias}\\b\\s*[:|\\-â€“â€”]?\\s*(.*)$`, 'i')
+        const rx = new RegExp(`^[^A-Za-z0-9]*${escapedAlias}\\b\\s*[:|\\-–—]?\\s*(.*)$`, 'i')
         const m = line.match(rx)
         return (m?.[1] || '').trim()
     }
@@ -239,9 +234,6 @@ export function parseTextToResume(text: string): Partial<Resume> {
             }
         }
     }
-
-    console.log('Found sections:', sectionIdxs.map(s => `${s.name}@${s.idx}`))
-
     // helper to slice section
     function getSection(name: string): string {
         const sec = sectionIdxs.find(s => s.name === name)
@@ -253,7 +245,6 @@ export function parseTextToResume(text: string): Partial<Resume> {
         if (sec.inline) lines.push(sec.inline)
         lines.push(...allLines.slice(start, end))
         const sectionText = lines.join('\n').trim()
-        console.log(`Section "${name}": ${sectionText.length} chars`)
         return sectionText
     }
 
@@ -269,7 +260,7 @@ export function parseTextToResume(text: string): Partial<Resume> {
 
     const skillsArr: Skill[] = []
     if (skillsText) {
-        const tokens = skillsText.split(/[,;\u2022â€¢|\n]+/).map(s => s.trim()).filter(Boolean)
+        const tokens = skillsText.split(/[,;\u2022•|\n]+/).map(s => s.trim()).filter(Boolean)
         for (const t of tokens) {
             if (t.length > 1 && t.length < 50) {
                 skillsArr.push({ id: generateId(), name: t, level: 'Intermediate' })
@@ -286,7 +277,7 @@ export function parseTextToResume(text: string): Partial<Resume> {
         })
         if (fallbackSkillsLines.length) {
             const combined = fallbackSkillsLines.join(' ')
-            const tokens = combined.split(/[,;\u2022â€¢|\n]+/).map(s => s.trim()).filter(Boolean)
+            const tokens = combined.split(/[,;\u2022•|\n]+/).map(s => s.trim()).filter(Boolean)
             for (const t of tokens) {
                 if (t.length > 1 && t.length < 50) {
                     skillsArr.push({ id: generateId(), name: t, level: 'Intermediate' })
@@ -295,9 +286,9 @@ export function parseTextToResume(text: string): Partial<Resume> {
         }
     }
 
-    const bulletLike = (line: string) => /^[-*â€¢]\s+/.test(line)
+    const bulletLike = (line: string) => /^[-*•]\s+/.test(line)
     const likelyDateLine = (line: string) =>
-        /(\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{4}\s*(?:-|â€“|â€”|to)\s*(?:Present|Current|\d{4})|\b\d{4}\s*(?:-|â€“|â€”|to)\s*(?:Present|Current|\d{4})|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{4}\b|\b\d{4}\b)/i.test(line)
+        /(\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{4}\s*(?:-|–|—|to)\s*(?:Present|Current|\d{4})|\b\d{4}\s*(?:-|–|—|to)\s*(?:Present|Current|\d{4})|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{4}\b|\b\d{4}\b)/i.test(line)
     const extractDates = (line: string) =>
         line.match(/(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{4}|Present|Current|\d{4}/gi) || []
     const likelyExpHeader = (line: string) => {
@@ -305,7 +296,7 @@ export function parseTextToResume(text: string): Partial<Resume> {
         if (line.length > 120) return false
         if (isSectionHeaderLine(line)) return false
         if (/^(responsibilities|achievements|highlights)\s*:?\s*$/i.test(line)) return false
-        return /\s+at\s+/i.test(line) || /\|/.test(line) || /\s[-â€“â€”]\s/.test(line)
+        return /\s+at\s+/i.test(line) || /\|/.test(line) || /\s[-–—]\s/.test(line)
     }
 
     // experience
@@ -340,8 +331,8 @@ export function parseTextToResume(text: string): Partial<Resume> {
                     current.startDate = moreDates[0] || ''
                     current.endDate = moreDates[1] || ''
                 }
-            } else if (/\s[-â€“â€”]\s/.test(header)) {
-                const [a, b] = header.split(/\s[-â€“â€”]\s/, 2).map(s => s.trim())
+            } else if (/\s[-–—]\s/.test(header)) {
+                const [a, b] = header.split(/\s[-–—]\s/, 2).map(s => s.trim())
                 position = a || ''
                 company = b || ''
             } else {
@@ -351,7 +342,7 @@ export function parseTextToResume(text: string): Partial<Resume> {
             const description = current.detailLines.join(' ').trim()
             const achievements = description
                 ? description
-                    .split(/[\u2022â€¢]+|(?<!\d)-(?!\d)/)
+                    .split(/[\u2022•]+|(?<!\d)-(?!\d)/)
                     .map(s => s.trim())
                     .filter(s => s.length > 5)
                     .slice(0, 5)
@@ -436,8 +427,8 @@ export function parseTextToResume(text: string): Partial<Resume> {
                 const pipeParts = header.split('|').map(s => s.trim()).filter(Boolean)
                 position = pipeParts[0] || ''
                 company = pipeParts[1] || ''
-            } else if (/\s[-â€“â€”]\s/.test(header)) {
-                const [a, b] = header.split(/\s[-â€“â€”]\s/, 2).map(s => s.trim())
+            } else if (/\s[-–—]\s/.test(header)) {
+                const [a, b] = header.split(/\s[-–—]\s/, 2).map(s => s.trim())
                 position = a || ''
                 company = b || ''
             } else {
@@ -456,7 +447,7 @@ export function parseTextToResume(text: string): Partial<Resume> {
             const description = detailLines.join(' ').trim()
             const achievements = description
                 ? description
-                    .split(/[\u2022â€¢]+|(?<!\d)-(?!\d)/)
+                    .split(/[\u2022•]+|(?<!\d)-(?!\d)/)
                     .map(s => s.trim())
                     .filter(s => s.length > 5)
                     .slice(0, 5)
@@ -482,7 +473,7 @@ export function parseTextToResume(text: string): Partial<Resume> {
         }
     }
     if (!experiences.length) {
-        const dateRange = /(\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{4}\s*(?:-|â€“|â€”)\s*(?:Present|\d{4})|\b\d{4}\s*(?:-|â€“|â€”)\s*(?:Present|\d{4}))/i
+        const dateRange = /(\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{4}\s*(?:-|–|—)\s*(?:Present|\d{4})|\b\d{4}\s*(?:-|–|—)\s*(?:Present|\d{4}))/i
         for (let i = 0; i < allLines.length; i++) {
             const line = allLines[i]
             if (!dateRange.test(line)) continue
@@ -624,7 +615,7 @@ export function parseTextToResume(text: string): Partial<Resume> {
     if (certText) {
         const parts = certText.split(/\n/).map(l => l.trim()).filter(Boolean)
         for (const p of parts) {
-            const cleaned = p.replace(/^[-*â€¢]\s*/, '').trim()
+            const cleaned = p.replace(/^[-*•]\s*/, '').trim()
             if (cleaned.length > 2) {
                 const pipeParts = cleaned.split('|').map(s => s.trim()).filter(Boolean)
                 certifications.push({
@@ -641,9 +632,9 @@ export function parseTextToResume(text: string): Partial<Resume> {
     const customSections: Resume['customSections'] = []
     if (affiliationsText) {
         const items = affiliationsText
-            .split(/\n|[â€¢\u2022]/)
+            .split(/\n|[•\u2022]/)
             .flatMap((chunk) => chunk.split('|'))
-            .map((item) => item.replace(/^[-*â€¢]\s*/, '').trim())
+            .map((item) => item.replace(/^[-*•]\s*/, '').trim())
             .filter((item) => item.length > 2)
 
         if (items.length) {
@@ -704,16 +695,6 @@ export function parseTextToResume(text: string): Partial<Resume> {
         flushProject(cursor)
     }
 
-    console.log('Parsed:', {
-        name: personal.firstName + ' ' + personal.lastName,
-        email: personal.email,
-        skills: skillsArr.length,
-        experience: experiences.length,
-        education: education.length,
-        certifications: certifications.length,
-        projects: projects.length,
-        customSections: customSections.length,
-    })
 
     return {
         name: (personal.firstName || '') + (personal.lastName ? ' ' + personal.lastName : ''),
@@ -738,7 +719,6 @@ export function parseTextToResume(text: string): Partial<Resume> {
 }
 
 export async function parseResumeFile(file: File): Promise<Partial<Resume>> {
-    console.log('parseResumeFile called for', file.name)
     const text = await extractTextFromFile(file)
 
     if (!text || text.trim().length === 0) {
@@ -747,3 +727,4 @@ export async function parseResumeFile(file: File): Promise<Partial<Resume>> {
 
     return parseTextToResume(text)
 }
+

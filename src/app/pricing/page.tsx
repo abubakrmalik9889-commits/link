@@ -88,8 +88,8 @@ const comparisons = [
   { feature: 'Resume Templates', free: '3', pro: 'All 15+', premium: 'All 15+', enterprise: 'Custom' },
   { feature: 'AI Suggestions', free: 'Basic', pro: 'Advanced', premium: 'Full AI Writer', enterprise: 'Custom AI' },
   { feature: 'ATS Optimization', free: 'Basic', pro: 'Advanced', premium: 'Premium', enterprise: 'Enterprise' },
-  { feature: 'Cover Letters', free: '—', pro: '✓', premium: '✓', enterprise: '✓' },
-  { feature: 'Analytics', free: '—', pro: 'Basic', premium: 'Advanced', enterprise: 'Custom' },
+  { feature: 'Cover Letters', free: '-', pro: 'Yes', premium: 'Yes', enterprise: 'Yes' },
+  { feature: 'Analytics', free: '-', pro: 'Basic', premium: 'Advanced', enterprise: 'Custom' },
   { feature: 'Support', free: 'Email', pro: 'Priority', premium: '24/7 Premium', enterprise: 'Dedicated' },
 ]
 
@@ -166,7 +166,7 @@ export default function PricingPage() {
                       ))}
                     </ul>
 
-                    <Link href={plan.name === 'Enterprise' ? '/contact' : '/auth/signup'} className="block">
+                    <Link href="/auth/signup" className="block">
                       <GlowButton 
                         variant={plan.popular ? 'primary' : 'outline'} 
                         className="w-full justify-center"
@@ -238,7 +238,7 @@ export default function PricingPage() {
                 },
                 {
                   q: 'Is there a free trial?',
-                  a: 'Yes, all paid plans come with a 14-day free trial. No credit card required.',
+                  a: 'Paid plans may include a limited trial period depending on current offers.',
                 },
                 {
                   q: 'What payment methods do you accept?',

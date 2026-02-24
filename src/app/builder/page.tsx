@@ -230,7 +230,6 @@ function BuilderContent() {
     }
 
     setIsUploading(true)
-    console.log('Uploading file for parsing:', { name: file.name, type: file.type, size: file.size })
 
     try {
       // Dynamic import so heavy libs load only in browser

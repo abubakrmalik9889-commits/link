@@ -2,6 +2,9 @@ import { NextResponse, type NextRequest } from 'next/server'
 import type { Resume } from '@/types'
 
 type AiAction = 'summary' | 'skills'
+const RATE_LIMIT_WINDOW_MS = 60_000
+const RATE_LIMIT_MAX_REQUESTS = 15
+const ipHits = new Map<string, { count: number; resetAt: number }>()
 
 function jsonError(message: string, status = 400) {
   return NextResponse.json({ error: message }, { status })
@@ -10,6 +13,17 @@ function jsonError(message: string, status = 400) {
 export async function POST(req: NextRequest) {
   const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) return jsonError('Missing OPENAI_API_KEY', 500)
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+  const now = Date.now()
+  const hit = ipHits.get(ip)
+  if (!hit || hit.resetAt <= now) {
+    ipHits.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+  } else {
+    hit.count += 1
+    if (hit.count > RATE_LIMIT_MAX_REQUESTS) {
+      return jsonError('Rate limit exceeded. Please try again in a minute.', 429)
+    }
+  }
 
   const model = process.env.OPENAI_MODEL || 'gpt-4o-mini'
 

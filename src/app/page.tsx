@@ -51,7 +51,7 @@ const features = [
   {
     icon: FileText,
     title: 'Multiple Formats',
-    description: 'Export your resume as PDF, DOCX, or share via a unique link with potential employers.',
+    description: 'Export your resume as PDF and keep your latest version ready for applications.',
   },
   {
     icon: TrendingUp,
@@ -62,30 +62,30 @@ const features = [
 
 const testimonials = [
   {
-    name: 'Sarah Chen',
-    role: 'Product Manager at Google',
-    content: 'ResumAI helped me land interviews at top tech companies. The AI suggestions were incredibly helpful!',
+    name: 'Early User',
+    role: 'Software Professional',
+    content: 'The builder is clean, fast, and easy to customize for different job roles.',
     rating: 5,
   },
   {
-    name: 'Michael Roberts',
-    role: 'Senior Developer at Microsoft',
-    content: 'The ATS optimization feature is a game-changer. I finally started getting callbacks after using ResumAI.',
+    name: 'Beta User',
+    role: 'Marketing Specialist',
+    content: 'The ATS suggestions helped me rewrite weak sections into stronger, clearer bullet points.',
     rating: 5,
   },
   {
-    name: 'Emily Watson',
-    role: 'Marketing Director',
-    content: 'Beautiful templates and the AI writing assistant saved me hours of work. Highly recommended!',
+    name: 'Community Member',
+    role: 'Recent Graduate',
+    content: 'Template switching and live preview made resume editing much easier before applications.',
     rating: 5,
   },
 ]
 
 const stats = [
-  { value: '500K+', label: 'Resumes Created' },
-  { value: '95%', label: 'Success Rate' },
-  { value: '50+', label: 'Countries' },
-  { value: '4.9', label: 'User Rating' },
+  { value: 'Live', label: 'Web App Status' },
+  { value: '7+', label: 'Templates' },
+  { value: 'ATS', label: 'Checks Included' },
+  { value: 'AI', label: 'Writing Assist' },
 ]
 
 const buildPreviewResume = (overrides: Partial<Resume>): Resume => {
@@ -370,7 +370,7 @@ export default function HomePage() {
               <GradientText variant="emerald" animate>Dream Resume?</GradientText>
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-10">
-              Join 500,000+ professionals who have already transformed their careers with ResumAI.
+              Start with a clean template, improve your ATS score, and export a polished resume fast.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/builder">
@@ -380,7 +380,7 @@ export default function HomePage() {
               </Link>
               <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                <span>No credit card required</span>
+                <span>Start free and upgrade anytime</span>
               </div>
             </div>
           </SlideIn>

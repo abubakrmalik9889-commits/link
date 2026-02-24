@@ -27,6 +27,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+backend/.env
 
 # vercel
 .vercel
@@ -37,3 +38,4 @@ next-env.d.ts
 dist/
 backend/node_modules/
 backend/dist/
+*.zip
